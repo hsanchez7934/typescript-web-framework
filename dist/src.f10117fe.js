@@ -2047,6 +2047,7 @@ function () {
 
     this.data = data;
     this.events = {};
+    this.url = 'http://localhost:3000';
 
     this.set = function (update) {
       Object.assign(_this.data, update);
@@ -2082,11 +2083,51 @@ function () {
             case 0:
               return [4
               /*yield*/
-              , axios_1.default.get("http://localhost:3000/users/" + this.get('id'))];
+              , axios_1.default.get(this.url + "/users/" + this.get('id'))];
 
             case 1:
               response = _a.sent();
               this.set(response.data);
+              return [2
+              /*return*/
+              ];
+          }
+        });
+      });
+    };
+
+    this.save = function () {
+      return __awaiter(_this, void 0, Promise, function () {
+        var id;
+        return __generator(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              id = this.get('id');
+              if (!id) return [3
+              /*break*/
+              , 2];
+              return [4
+              /*yield*/
+              , axios_1.default.put(this.url + "/users/" + id, this.data)];
+
+            case 1:
+              _a.sent();
+
+              return [3
+              /*break*/
+              , 4];
+
+            case 2:
+              return [4
+              /*yield*/
+              , axios_1.default.post(this.url + "/users", this.data)];
+
+            case 3:
+              _a.sent();
+
+              _a.label = 4;
+
+            case 4:
               return [2
               /*return*/
               ];
@@ -2110,9 +2151,10 @@ Object.defineProperty(exports, "__esModule", {
 var User_1 = require("./models/User");
 
 var user = new User_1.User({
-  id: 1
+  name: 'Arthur',
+  age: 20
 });
-user.fetch();
+user.save();
 },{"./models/User":"src/models/User.ts"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';

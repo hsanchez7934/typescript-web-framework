@@ -13,6 +13,7 @@ type Callback = () => void;
 
 export class User {
 	events: {[key: string]: Callback[]} = {};
+	url: string = 'http://localhost:3000';
 
 	constructor(private data: UserProps) {}
 
@@ -44,8 +45,18 @@ export class User {
 
 	fetch = async (): Promise<void> => {
 		const response: AxiosResponse = await axios.get(
-			`http://localhost:3000/users/${this.get('id')}`
+			`${this.url}/users/${this.get('id')}`
 		);
 		this.set(response.data);
+	};
+
+	save = async (): Promise<void> => {
+		const id = this.get('id');
+
+		if (id) {
+			await axios.put(`${this.url}/users/${id}`, this.data);
+		} else {
+			await axios.post(`${this.url}/users`, this.data);
+		}
 	};
 }
