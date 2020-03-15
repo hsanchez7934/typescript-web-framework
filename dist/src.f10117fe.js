@@ -1983,6 +1983,10 @@ function () {
     this.get = function (key) {
       return _this.data[key];
     };
+
+    this.getAll = function () {
+      return _this.data;
+    };
   }
 
   return Attributes;
@@ -2190,6 +2194,41 @@ function () {
       });
     };
 
+    this.save = function () {
+      return __awaiter(_this, void 0, Promise, function () {
+        var response, error_1;
+        return __generator(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              _a.trys.push([0, 2,, 3]);
+
+              return [4
+              /*yield*/
+              , this.sync.save(this.attributes.getAll())];
+
+            case 1:
+              response = _a.sent();
+              this.trigger('save');
+              return [3
+              /*break*/
+              , 3];
+
+            case 2:
+              error_1 = _a.sent();
+              this.trigger('error');
+              return [3
+              /*break*/
+              , 3];
+
+            case 3:
+              return [2
+              /*return*/
+              ];
+          }
+        });
+      });
+    };
+
     this.attributes = new Attributes_1.Attributes(attrs);
   }
 
@@ -2228,12 +2267,14 @@ Object.defineProperty(exports, "__esModule", {
 var User_1 = require("./models/User");
 
 var user = new User_1.User({
-  id: 1
+  id: 1,
+  name: 'Armando',
+  age: 21
 });
-user.on('change', function () {
+user.on('save', function () {
   console.log(user);
 });
-user.fetch();
+user.save();
 },{"./models/User":"src/models/User.ts"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
