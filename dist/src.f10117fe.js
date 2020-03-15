@@ -1978,18 +1978,7 @@ function () {
 
     this.set = function (update) {
       Object.assign(_this.data, update);
-    }; // The K type is a generic constraint
-    // This limits the type that K can be
-    // In this case: K can only ever be
-    // one of the keys of T
-    // K can only be name, age, or id from UserProps in our case
-    // argument annotation: whatever argument we're passing in, it can only be of type K
-    // in this case: name, age, or id from UserProps in our case
-    // return annotation: look at interface of T
-    // and return the value of the key of K - this allows
-    // typescript to know what type its returning: in our case
-    // number for id or age and string for name
-
+    };
 
     this.get = function (key) {
       return _this.data[key];
@@ -1999,19 +1988,153 @@ function () {
   return Attributes;
 }();
 
-exports.Attributes = Attributes; // Code below tests our addition of K generic constraint
-// const attrs = new Attributes<UserProps>({
-// 	id: 6,
-// 	age: 25,
-// 	name: 'Mario'
-// })
-// We get the expected return type
-// string for name and number for age
-// const name = attrs.get('name');
-// const age = attrs.get('age');
+exports.Attributes = Attributes;
 },{}],"src/models/User.ts":[function(require,module,exports) {
 "use strict"; // Adding the question mark to the props
 // inside of the interface will make it optional
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = this && this.__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2029,8 +2152,44 @@ var User =
 /** @class */
 function () {
   function User(attrs) {
+    var _this = this;
+
     this.events = new Eventing_1.Eventing();
     this.sync = new Sync_1.Sync(rootUrl);
+
+    this.set = function (update) {
+      _this.attributes.set(update);
+
+      _this.events.trigger('change');
+    };
+
+    this.fetch = function () {
+      return __awaiter(_this, void 0, Promise, function () {
+        var id, response;
+        return __generator(this, function (_a) {
+          switch (_a.label) {
+            case 0:
+              id = this.get('id');
+
+              if (typeof id !== 'number') {
+                throw new Error('Cannot fetch without an id.');
+              }
+
+              return [4
+              /*yield*/
+              , this.sync.fetch(id)];
+
+            case 1:
+              response = _a.sent();
+              this.set(response.data);
+              return [2
+              /*return*/
+              ];
+          }
+        });
+      });
+    };
+
     this.attributes = new Attributes_1.Attributes(attrs);
   }
 
@@ -2069,9 +2228,12 @@ Object.defineProperty(exports, "__esModule", {
 var User_1 = require("./models/User");
 
 var user = new User_1.User({
-  name: 'Sam',
-  age: 30
+  id: 1
 });
+user.on('change', function () {
+  console.log(user);
+});
+user.fetch();
 },{"./models/User":"src/models/User.ts"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';

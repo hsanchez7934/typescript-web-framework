@@ -1,4 +1,10 @@
 import axios from 'axios';
 import {User} from './models/User';
 
-const user = new User({name: 'Sam', age: 30});
+const user = new User({id: 1});
+
+user.on('change', () => {
+	console.log(user);
+});
+
+user.fetch();
