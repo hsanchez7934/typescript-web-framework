@@ -1,5 +1,11 @@
 {
   "devDependencies": {
     "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "server": "json-server -w db.json"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
   }
 }
