@@ -1,9 +1,12 @@
 // Adding the question mark to the props
 // inside of the interface will make it optional
 
+import axios, {AxiosResponse} from 'axios';
+
 interface UserProps {
 	name?: string;
 	age?: number;
+	id?: number;
 }
 
 type Callback = () => void;
@@ -37,5 +40,12 @@ export class User {
 		handlers.forEach(callback => {
 			callback();
 		});
+	};
+
+	fetch = async (): Promise<void> => {
+		const response: AxiosResponse = await axios.get(
+			`http://localhost:3000/users/${this.get('id')}`
+		);
+		this.set(response.data);
 	};
 }
