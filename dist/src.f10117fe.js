@@ -1961,7 +1961,55 @@ function () {
 }();
 
 exports.Sync = Sync;
-},{"axios":"node_modules/axios/index.js"}],"src/models/User.ts":[function(require,module,exports) {
+},{"axios":"node_modules/axios/index.js"}],"src/models/Attributes.ts":[function(require,module,exports) {
+"use strict"; // import {UserProps} from './User';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Attributes =
+/** @class */
+function () {
+  function Attributes(data) {
+    var _this = this;
+
+    this.data = data;
+
+    this.set = function (update) {
+      Object.assign(_this.data, update);
+    }; // The K type is a generic constraint
+    // This limits the type that K can be
+    // In this case: K can only ever be
+    // one of the keys of T
+    // K can only be name, age, or id from UserProps in our case
+    // argument annotation: whatever argument we're passing in, it can only be of type K
+    // in this case: name, age, or id from UserProps in our case
+    // return annotation: look at interface of T
+    // and return the value of the key of K - this allows
+    // typescript to know what type its returning: in our case
+    // number for id or age and string for name
+
+
+    this.get = function (key) {
+      return _this.data[key];
+    };
+  }
+
+  return Attributes;
+}();
+
+exports.Attributes = Attributes; // Code below tests our addition of K generic constraint
+// const attrs = new Attributes<UserProps>({
+// 	id: 6,
+// 	age: 25,
+// 	name: 'Mario'
+// })
+// We get the expected return type
+// string for name and number for age
+// const name = attrs.get('name');
+// const age = attrs.get('age');
+},{}],"src/models/User.ts":[function(require,module,exports) {
 "use strict"; // Adding the question mark to the props
 // inside of the interface will make it optional
 
@@ -1973,32 +2021,45 @@ var Eventing_1 = require("./Eventing");
 
 var Sync_1 = require("./Sync");
 
+var Attributes_1 = require("./Attributes");
+
 var rootUrl = 'http://localhost:3000/users';
 
 var User =
 /** @class */
 function () {
-  function User(data) {
-    var _this = this;
-
-    this.data = data;
+  function User(attrs) {
     this.events = new Eventing_1.Eventing();
     this.sync = new Sync_1.Sync(rootUrl);
-
-    this.set = function (update) {
-      Object.assign(_this.data, update);
-    };
-
-    this.get = function (propName) {
-      return _this.data[propName];
-    };
+    this.attributes = new Attributes_1.Attributes(attrs);
   }
 
+  Object.defineProperty(User.prototype, "on", {
+    get: function get() {
+      return this.events.on;
+    },
+    enumerable: true,
+    configurable: true
+  });
+  Object.defineProperty(User.prototype, "trigger", {
+    get: function get() {
+      return this.events.trigger;
+    },
+    enumerable: true,
+    configurable: true
+  });
+  Object.defineProperty(User.prototype, "get", {
+    get: function get() {
+      return this.attributes.get;
+    },
+    enumerable: true,
+    configurable: true
+  });
   return User;
 }();
 
 exports.User = User;
-},{"./Eventing":"src/models/Eventing.ts","./Sync":"src/models/Sync.ts"}],"src/index.ts":[function(require,module,exports) {
+},{"./Eventing":"src/models/Eventing.ts","./Sync":"src/models/Sync.ts","./Attributes":"src/models/Attributes.ts"}],"src/index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2011,10 +2072,6 @@ var user = new User_1.User({
   name: 'Sam',
   age: 30
 });
-user.events.on('change', function () {
-  console.log('test');
-});
-user.events.trigger('change');
 },{"./models/User":"src/models/User.ts"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
