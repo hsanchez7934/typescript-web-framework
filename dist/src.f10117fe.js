@@ -2151,7 +2151,25 @@ function () {
 
     this.attributes = attributes;
     this.events = events;
-    this.sync = sync;
+    this.sync = sync; // We're only able to use this syntax because we're
+    // initializing attributes, events, and sync, in the constructor
+    // parens
+    // Same as the method below, cleaner syntax
+    // get on() {
+    // 	return this.events.on;
+    // }
+
+    this.on = this.events.on; // Same as the method below, cleaner syntax
+    // get trigger() {
+    // 	return this.events.trigger;
+    // }
+
+    this.trigger = this.events.trigger; // Same as the method below, cleaner syntax
+    // get get() {
+    // 	return this.attributes.get;
+    // }
+
+    this.get = this.attributes.get;
 
     this.set = function (update) {
       _this.attributes.set(update);
@@ -2222,27 +2240,6 @@ function () {
     };
   }
 
-  Object.defineProperty(Model.prototype, "on", {
-    get: function get() {
-      return this.events.on;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Model.prototype, "trigger", {
-    get: function get() {
-      return this.events.trigger;
-    },
-    enumerable: true,
-    configurable: true
-  });
-  Object.defineProperty(Model.prototype, "get", {
-    get: function get() {
-      return this.attributes.get;
-    },
-    enumerable: true,
-    configurable: true
-  });
   return Model;
 }();
 
@@ -2317,15 +2314,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var User_1 = require("./models/User");
 
-var user = new User_1.User({
-  id: 1,
-  name: 'Armando',
-  age: 21
+var user = User_1.User.buildUser({
+  id: 1
 });
-user.on('save', function () {
+user.on('change', function () {
   console.log(user);
 });
-user.save();
+user.fetch();
 },{"./models/User":"src/models/User.ts"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
