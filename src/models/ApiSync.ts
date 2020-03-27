@@ -2,14 +2,14 @@ import axios, {AxiosPromise} from 'axios';
 
 // This interface is a contraint
 // we're telling typescript that whatever type we pass
-// into class Sync, that type will have a property of id
+// into class ApiSync, that type will have a property of id
 // that will be a number
 interface HasId {
 	id?: number;
 }
 
 // Making Sync a generic class
-export class Sync<T extends HasId> {
+export class ApiSync<T extends HasId> {
 	constructor(public rootUrl: string) {}
 
 	fetch = (id: number): AxiosPromise => {
