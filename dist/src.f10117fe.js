@@ -133,23 +133,37 @@ function () {
     this.parent = parent;
     this.model = model;
 
+    this.bindModel = function () {
+      _this.model.on('change', function () {
+        _this.render();
+      });
+    };
+
     this.eventsMap = function () {
       return {
-        'click:button': _this.onButtonClick,
-        'mouseover:h1': _this.onHeaderHover
+        'click:.set-age': _this.onSetAgeClick,
+        'click:.set-name': _this.onSetNameClick
       };
     };
 
     this.template = function () {
-      return "\n\t\t<div>\n\t\t\t<h1>User Form</h1>\n\t\t\t<div>User name: " + _this.model.get('name') + "</div>\n\t\t\t<div>User age: " + _this.model.get('age') + "</div>\n\t\t\t<input type=\"text\"/>\n\t\t\t<button>Click Me</button>\n\t\t</div>\n\t\t";
+      return "\n\t\t<div>\n\t\t\t<h1>User Form</h1>\n\t\t\t<div>User name: " + _this.model.get('name') + "</div>\n\t\t\t<div>User age: " + _this.model.get('age') + "</div>\n\t\t\t<input type=\"text\"/>\n\t\t\t<button class=\"set-name\">Change Name</button>\n\t\t\t<button class=\"set-age\">Set Random Age</button>\n\t\t</div>\n\t\t";
     };
 
-    this.onButtonClick = function () {
-      console.log('test');
+    this.onSetAgeClick = function () {
+      _this.model.setRandomAge();
     };
 
-    this.onHeaderHover = function () {
-      console.log('H1 was hovered over');
+    this.onSetNameClick = function () {
+      var input = _this.parent.querySelector('input');
+
+      if (input) {
+        var name = input.value;
+
+        _this.model.set({
+          name: name
+        });
+      }
     };
 
     this.bindEvents = function (fragment) {
@@ -171,6 +185,7 @@ function () {
     };
 
     this.render = function () {
+      _this.parent.innerHTML = '';
       var templateElement = document.createElement('template');
       templateElement.innerHTML = _this.template();
 
@@ -178,6 +193,8 @@ function () {
 
       _this.parent.append(templateElement.content);
     };
+
+    this.bindModel();
   }
 
   return UserForm;
@@ -2592,7 +2609,17 @@ function (_super) {
   __extends(User, _super);
 
   function User() {
-    return _super !== null && _super.apply(this, arguments) || this;
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.setRandomAge = function () {
+      var age = Math.round(Math.random() * 100);
+
+      _this.set({
+        age: age
+      });
+    };
+
+    return _this;
   }
 
   User.buildUser = function (attrs) {
@@ -2620,11 +2647,17 @@ var UserForm_1 = require("./views/UserForm");
 
 var User_1 = require("./models/User");
 
-var userForm = new UserForm_1.UserForm(document.getElementById('root'), User_1.User.buildUser({
-  name: 'Sara',
-  age: 25
-}));
-userForm.render();
+var root = document.getElementById('root');
+
+if (root) {
+  var userForm = new UserForm_1.UserForm(root, User_1.User.buildUser({
+    name: 'Sara',
+    age: 25
+  }));
+  userForm.render();
+} else {
+  throw new Error('Root element not found');
+}
 },{"./views/UserForm":"src/views/UserForm.ts","./models/User":"src/models/User.ts"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
