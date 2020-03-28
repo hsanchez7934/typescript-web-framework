@@ -117,21 +117,30 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/views/UserForm.ts":[function(require,module,exports) {
+})({"src/views/View.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var UserForm =
+var View =
 /** @class */
 function () {
-  function UserForm(parent, model) {
+  function View(parent, model) {
     var _this = this;
 
     this.parent = parent;
     this.model = model;
+    this.regions = {};
+
+    this.regionsMap = function () {
+      return {};
+    };
+
+    this.eventsMap = function () {
+      return {};
+    };
 
     this.bindModel = function () {
       _this.model.on('change', function () {
@@ -139,30 +148,16 @@ function () {
       });
     };
 
-    this.eventsMap = function () {
-      return {
-        'click:.set-age': _this.onSetAgeClick,
-        'click:.set-name': _this.onSetNameClick
-      };
-    };
+    this.mapRegions = function (fragment) {
+      var regionsMap = _this.regionsMap();
 
-    this.template = function () {
-      return "\n\t\t<div>\n\t\t\t<h1>User Form</h1>\n\t\t\t<div>User name: " + _this.model.get('name') + "</div>\n\t\t\t<div>User age: " + _this.model.get('age') + "</div>\n\t\t\t<input type=\"text\"/>\n\t\t\t<button class=\"set-name\">Change Name</button>\n\t\t\t<button class=\"set-age\">Set Random Age</button>\n\t\t</div>\n\t\t";
-    };
+      for (var key in regionsMap) {
+        var selector = regionsMap[key];
+        var element = fragment.querySelector(selector);
 
-    this.onSetAgeClick = function () {
-      _this.model.setRandomAge();
-    };
-
-    this.onSetNameClick = function () {
-      var input = _this.parent.querySelector('input');
-
-      if (input) {
-        var name = input.value;
-
-        _this.model.set({
-          name: name
-        });
+        if (element) {
+          _this.regions[key] = element;
+        }
       }
     };
 
@@ -191,17 +186,101 @@ function () {
 
       _this.bindEvents(templateElement.content);
 
+      _this.regionsMap;
+
       _this.parent.append(templateElement.content);
     };
 
     this.bindModel();
   }
 
-  return UserForm;
+  return View;
 }();
 
+exports.View = View;
+},{}],"src/views/UserForm.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (b.hasOwnProperty(p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var View_1 = require("./View");
+
+var UserForm =
+/** @class */
+function (_super) {
+  __extends(UserForm, _super);
+
+  function UserForm() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.eventsMap = function () {
+      return {
+        'click:.set-age': _this.onSetAgeClick,
+        'click:.set-name': _this.onSetNameClick,
+        'click:.save-model': _this.onSaveClick
+      };
+    };
+
+    _this.template = function () {
+      return "\n\t\t<div>\n\t\t\t<input type=\"text\" placeholder=\"" + _this.model.get('name') + "\" />\n\t\t\t<button class=\"set-name\">Change Name</button>\n\t\t\t<button class=\"set-age\">Set Random Age</button>\n\t\t\t<button class=\"save-model\">Save User</button>\n\t\t</div>\n\t\t";
+    };
+
+    _this.onSetAgeClick = function () {
+      _this.model.setRandomAge();
+    };
+
+    _this.onSetNameClick = function () {
+      var input = _this.parent.querySelector('input');
+
+      if (input) {
+        var name = input.value;
+
+        _this.model.set({
+          name: name
+        });
+      }
+    };
+
+    _this.onSaveClick = function () {
+      _this.model.save();
+    };
+
+    return _this;
+  }
+
+  return UserForm;
+}(View_1.View);
+
 exports.UserForm = UserForm;
-},{}],"src/models/Eventing.ts":[function(require,module,exports) {
+},{"./View":"src/views/View.ts"}],"src/models/Eventing.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
